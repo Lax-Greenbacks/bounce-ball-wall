@@ -5,18 +5,32 @@
 <title>Bounce Ball Wall</title>
 <style>
 *{ padding: 0; margin 0; }
+h1
+{
+font-family: arial;
+text-align: center;
+font-size: 16px;
+}
+p{
+font-family: arial;
+text-align: center;
+font-size: 16px;
+}
 canvas { background: #eee; display: block; margin: 0 auto; }
 </style>
 </head>
 <body>
-
+<h1>Bounce Ball Wall by: Myles D Barrett
 <canvas id="myCanvas" width="480" height="320"></canvas>
+<p> Controls:</p>
+<p> Keyboard: Use the left and right arrow keys to move the paddle.</p>
+<p> Mobile: Use touch controls to move the paddle.</p>
+<p>Reload button:</p>
+<p><a href="bounceballwall.html"><img border="0" alt="BBW" src="022-happy.png"width="100" height="100"></a></p>
 
 <script> 
-
 var canvas = document.getElementById("myCanvas");
 var ctx = canvas.getContext("2d");
-
 var x = canvas.width/2;
 var y = canvas.height-30;
 var dx = 2;
@@ -28,80 +42,177 @@ var paddleX = (canvas.width-paddleWidth)/2;
 var rightPressed = false;
 var leftPressed = false;
 var score = 0;
-var audio = new Audio('ding.mp3');
+var audio1 = new Audio('ding.mp3');
+var audio2 = new Audio('loser.mp3');
 
-function drawBall() {
+function drawBall() 
+{
     ctx.beginPath();
     ctx.arc(x, y, ballRadius, 0, Math.PI*2);
-    ctx.fillStyle = "green";
+    ctx.fillStyle = "red";
     ctx.fill();
     ctx.closePath();
+if(score > 1)
+{
+ctx.fillStyle = "red";
+ctx.fill();
 }
-
-function drawScore() {
+if(score > 4)
+{
+ctx.fillStyle = "#D75B00";
+ctx.fill();
+}
+if(score > 9)
+{
+ctx.fillStyle = "#D0B528";
+ctx.fill();
+}
+if(score > 14)
+{
+ctx.fillStyle = "green";
+ctx.fill();
+}
+if(score > 19)
+{
+ctx.fillStyle = "blue";
+ctx.fill();
+}
+if(score > 24)
+{
+ctx.fillStyle = "purple";
+ctx.fill();
+}
+}
+function drawScore() 
+{
     ctx.font = "14px Arial";
-    ctx.fillStyle = "red";
+    ctx.fillStyle = "black";
     ctx.fillText("Score: "+score, 240, 20);
 }
-
-function draw(){
+function drawGO()
+{
+    ctx.font = "28px Arial";
+    ctx.fillStyle = "red";
+    ctx.fillText("GAME OVER", 200, 160);
+}
+function draw()
+{
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBall();
-drawPaddle();
-drawScore();
-function drawPaddle() {
+    drawPaddle();
+    drawScore();
+function drawPaddle() 
+{
     ctx.beginPath();
     ctx.rect(paddleX, canvas.height-paddleHeight, paddleWidth, paddleHeight);
-    ctx.fillStyle = "lightgreen";
+    ctx.fillStyle = "pink";
     ctx.fill();
     ctx.closePath();
-if(rightPressed && paddleX < canvas.width-paddleWidth) {
+if(score > 1)
+{
+ctx.fillStyle = "pink";
+ctx.fill();
+}
+if(score > 4)
+{
+ctx.fillStyle = "orange";
+ctx.fill();
+}
+if(score > 9)
+{
+ctx.fillStyle = "yellow";
+ctx.fill();
+}
+if(score > 14)
+{
+ctx.fillStyle = "lightgreen";
+ctx.fill();
+}
+if(score > 19)
+{
+ctx.fillStyle = "lightblue";
+ctx.fill();
+}
+if(score > 24)
+{
+ctx.fillStyle = "#AF8EDB";
+ctx.fill();
+}
+if(rightPressed && paddleX < canvas.width-paddleWidth) 
+{
     paddleX += 7;
 }
-else if(leftPressed && paddleX > 0) {
+else if(leftPressed && paddleX > 0) 
+{
     paddleX -= 7;
 }
 }
-if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
+if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) 
+{
     dx = -dx;
 }
-if(y + dy < ballRadius) {
+if(y + dy < ballRadius) 
+{
     dy = -dy;
-} else if(y + dy > canvas.height-ballRadius) {
-    if(x > paddleX && x < paddleX + paddleWidth) {
-        dy = -dy;
-	score++;
-audio.play();
-    }
-    else {
-        alert("Game Over");
-        document.location.reload();
-    }
+} 
+else if(y + dy > canvas.height-ballRadius) 
+{
+if(x > paddleX-5 && x < paddleX+5 + paddleWidth) //the -5 and +5 are to make the game more "fair"
+{
+    dy = -dy;
+    score++;
+    audio1.play();
+}
+    else 
+{
+    x=-10;
+    y=-10;
+    audio2.play();
+    drawGO();
+}
 }
     x += dx;
     y += dy;
 }
-document.addEventListener("keydown", keyDownHandler, false); //controls
+document.addEventListener("keydown", keyDownHandler, false); //keyboard controls
 document.addEventListener("keyup", keyUpHandler, false);
-function keyDownHandler(e) {
-    if(e.keyCode == 39) {
-        rightPressed = true;
-    }
-    else if(e.keyCode == 37) {
-        leftPressed = true;
-    }
+document.addEventListener("touchstart", touchHandler); //these 2 lines are for touch controls
+document.addEventListener("touchmove", touchHandler);
+
+function keyDownHandler(e) 
+{
+    if(e.keyCode == 39) 
+{
+    rightPressed = true;
+}
+    else if(e.keyCode == 37) 
+{
+    leftPressed = true;
+}
 }
 
-function keyUpHandler(e) {
-    if(e.keyCode == 39) {
-        rightPressed = false;
-    }
-    else if(e.keyCode == 37) {
-        leftPressed = false;
+function keyUpHandler(e) 
+{
+    if(e.keyCode == 39) 
+{
+    rightPressed = false;
+}
+    else if(e.keyCode == 37) 
+{
+    leftPressed = false;
+}
+}
+function touchHandler(e) //touch controls
+{
+    if(e.touches) 
+    {
+         paddleX = e.touches[0].pageX - canvas.offsetLeft - paddleWidth / 2;
+         output.innerHTML = "Touch:  <br />"+ " x: " + paddleX;
+         e.preventDefault();
     }
 }
 setInterval (draw, 10);
-
 </script>
 </body>
+</html>
 </html>
